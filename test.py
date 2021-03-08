@@ -17,7 +17,7 @@ class SizersSample(wx.Frame):
 
         # Widgets creation
         static_text = wx.StaticText(panel, -1, "Number of Subplots")
-        text_ctrl = wx.TextCtrl(panel, -1, "")
+        self.text_ctrl = wx.TextCtrl(panel, -1, "")
 
         # Buttons Creation
         closeBtn = wx.Button(panel, label="Cancel")
@@ -33,7 +33,7 @@ class SizersSample(wx.Frame):
 
         # MY ADDIITON
         center_sizer.Add(static_text, 1, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
-        center_sizer.Add(text_ctrl, 1, wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
+        center_sizer.Add(self.text_ctrl, 1, wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
 
         bottom_sizer.Add(closeBtn, 0, wx.LEFT|wx.ALIGN_CENTER, 5)
         bottom_sizer.Add(plotBtn, 0, wx.RIGHT|wx.ALIGN_CENTER, 5)
@@ -54,7 +54,8 @@ class SizersSample(wx.Frame):
         self.Close()
 
     def onPlot(self, event):
-        print("Plot !")
+        number_of_subplots = int(self.text_ctrl.GetValue())
+        print(number_of_subplots)
         
 
 if __name__ == '__main__':
