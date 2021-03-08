@@ -1,45 +1,54 @@
+# REF : https://docs.wxwidgets.org/3.0/overview_customwidgets.html
+#     : http://infinity77.net/pycon/tutorial/pybr/wxpython.html
+
 import wx
-from wx.lib import sized_controls
 
-ID_GMAIL = wx.NewIdRef(count=1)
-ID_OUTLOOK = wx.NewIdRef(count=1)
+# Import the widgets inspection tool
+import wx.lib.inspection
 
 
-class CustomDialog(sized_controls.SizedDialog):
+class SizersSample(wx.Frame):
 
-    def __init__(self, *args, **kwargs):
-        super(CustomDialog, self).__init__(*args, **kwargs)
-        pane = self.GetContentsPane()
+    def __init__(self, parent):
 
-        static_line = wx.StaticLine(pane, style=wx.LI_HORIZONTAL)
-        static_line.SetSizerProps(border=(('all', 0)), expand=True)
+        wx.Frame.__init__(self, parent, title='Sizers sample')
 
-        pane_btns = sized_controls.SizedPanel(pane)
-        pane_btns.SetSizerType('horizontal')
-        pane_btns.SetSizerProps(align='center')
+        panel = wx.Panel(self)
 
-        button_ok = wx.Button(pane_btns, ID_GMAIL, label='Gmail')
-        button_ok.Bind(wx.EVT_BUTTON, self.on_button)
+        # Widgets creation
+        radio_button = wx.RadioButton(panel, -1, "RadioButton")
+        check_box = wx.CheckBox(panel, -1, "CheckBox")
+        spin_ctrl = wx.SpinCtrl(panel, -1, "", min=0, max=100)
+        text_ctrl_1 = wx.TextCtrl(panel, -1, "A first text control", style=wx.TE_MULTILINE)
+        text_ctrl_2 = wx.TextCtrl(panel, -1, "A second text control", style=wx.TE_MULTILINE)
 
-        button_ok = wx.Button(pane_btns, ID_OUTLOOK, label='Outlook')
-        button_ok.Bind(wx.EVT_BUTTON, self.on_button)
+        # Starts of sizers section
 
-        self.Fit()
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        center_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        static_text = wx.StaticText(panel, -1, "StaticText")
+        main_sizer.Add(static_text, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 10)
+        
+        center_sizer.Add(radio_button, 1, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
+        center_sizer.Add(check_box, 1, wx.LEFT|wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
+        center_sizer.Add(spin_ctrl, 1, wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
 
-    def on_button(self, event):
-        if self.IsModal():
-            self.EndModal(event.EventObject.Id)
-        else:
-            self.Close()
+        main_sizer.Add(center_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        bottom_sizer.Add(text_ctrl_1, 1, wx.ALL|wx.EXPAND, 5)
+        bottom_sizer.Add(text_ctrl_2, 1, wx.ALL|wx.EXPAND, 5)
+        main_sizer.Add(bottom_sizer, 1, wx.ALL|wx.EXPAND, 5)
+        panel.SetSizer(main_sizer)
 
+        main_sizer.Layout()
+        
 
 if __name__ == '__main__':
-    app = wx.App(False)
-    dlg = CustomDialog(None, title='Custom Dialog')
-    result = dlg.ShowModal()
-    if result == ID_GMAIL:
-        print('Gmail')
-    elif result == ID_OUTLOOK:
-        print('Outlook')
-    dlg.Destroy()
+    app = wx.App(0)
+    frame = SizersSample(None)
+    frame.Show()
+
+    #wx.lib.inspection.InspectionTool().Show()
+
     app.MainLoop()
