@@ -2,7 +2,7 @@
 # https://docs.wxwidgets.org/3.0/overview_customwidgets.html
 # http://infinity77.net/pycon/tutorial/pybr/wxpython.html -> a good primer for wxpython and Sizers
 # https://www.blog.pythonlibrary.org/2012/05/05/wxpython-adding-and-removing-widgets-dynamically/ -> Add widgets on the click of a button
-
+# https://stackoverflow.com/questions/6745463/exit-frame-and-panel-from-panel-method -> Close parent frame from a button in the panel
 import wx
 
 # Import the widgets inspection tool

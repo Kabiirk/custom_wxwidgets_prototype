@@ -1,3 +1,10 @@
+# REF :
+# https://zetcode.com/wxpython/advanced/ -> some useful info on advanced widgets
+# https://docs.wxwidgets.org/3.0/overview_customwidgets.html
+# http://infinity77.net/pycon/tutorial/pybr/wxpython.html -> a good primer for wxpython and Sizers
+# https://www.blog.pythonlibrary.org/2012/05/05/wxpython-adding-and-removing-widgets-dynamically/ -> Add widgets on the click of a button
+# https://stackoverflow.com/questions/6745463/exit-frame-and-panel-from-panel-method -> Close parent frame from a button in the panel
+
 import wx
 ########################################################################
 class MyPanel(wx.Panel):
@@ -11,7 +18,7 @@ class MyPanel(wx.Panel):
         
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         controlSizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.widgetSizer = wx.BoxSizer(wx.VERTICAL)
+        self.widgetSizer = wx.BoxSizer(wx.HORIZONTAL)
         bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.addButton = wx.Button(self, label="Add")
@@ -39,11 +46,17 @@ class MyPanel(wx.Panel):
     #----------------------------------------------------------------------
     def onAddWidget(self, event):
         """"""
+        sampleList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
         self.number_of_buttons += 1
-        label = "Button %s" %  self.number_of_buttons
-        name = "button%s" % self.number_of_buttons
-        new_button = wx.Button(self, label=label, name=name)
-        self.widgetSizer.Add(new_button, 0, wx.ALL, 5)
+
+        # label = "Button %s" %  self.number_of_buttons
+        # name = "button%s" % self.number_of_buttons
+
+        # new_button = wx.Button(self, label=label, name=name)
+        lb = wx.ListBox(self, size=(200, 150), style=wx.LB_MULTIPLE, choices=sampleList)
+        #property_select_text = wx.StaticText
+
+        self.widgetSizer.Add(lb, 0, wx.ALL, 5)
         self.frame.fSizer.Layout()
         self.frame.Fit()
     
@@ -70,6 +83,7 @@ class MyPanel(wx.Panel):
     def onPlot(self, event):
         # number_of_subplots = int(self.text_ctrl.GetValue())
         # print(number_of_subplots)
+        final_selection = []
         print(self.number_of_buttons)
             
                 
