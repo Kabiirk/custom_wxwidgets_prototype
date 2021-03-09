@@ -48,6 +48,9 @@ class MyPanel(wx.Panel):
             self.frame.fSizer.Layout()
             self.frame.Fit()
 
+        else:
+            mssg_box = wx.MessageBox("No Plots to remove !", "Message" ,wx.OK | wx.ICON_INFORMATION)  
+
     #----------------------------------------------------------------------
     def a_func(self, event):
         print("I was pressed !")
