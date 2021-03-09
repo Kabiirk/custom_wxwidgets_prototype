@@ -22,9 +22,9 @@ class MyPanel(wx.Panel):
         self.removeButton.Bind(wx.EVT_BUTTON, self.onRemoveWidget)
         controlSizer.Add(self.removeButton, 0, wx.CENTER|wx.ALL, 5)
 
-        self.closeBtn = wx.Button(self, label="Cancel")
-        self.closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
-        bottomSizer.Add(self.closeBtn,  0, wx.CENTER|wx.ALL, 5)
+        closeBtn = wx.Button(self, label="Cancel")
+        closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
+        bottomSizer.Add(closeBtn,  0, wx.CENTER|wx.ALL, 5)
 
         self.plotBtn = wx.Button(self, label="Plot")
         self.plotBtn.Bind(wx.EVT_BUTTON, self.onPlot)
@@ -63,7 +63,8 @@ class MyPanel(wx.Panel):
 
     #----------------------------------------------------------------------
     def onClose(self, event):
-        self.Close()
+        frame = self.GetParent()
+        frame.Close()
 
     #----------------------------------------------------------------------
     def onPlot(self, event):
