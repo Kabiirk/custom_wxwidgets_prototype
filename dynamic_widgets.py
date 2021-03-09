@@ -12,6 +12,7 @@ class MyPanel(wx.Panel):
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         controlSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.widgetSizer = wx.BoxSizer(wx.VERTICAL)
+        bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.addButton = wx.Button(self, label="Add")
         self.addButton.Bind(wx.EVT_BUTTON, self.onAddWidget)
@@ -20,9 +21,18 @@ class MyPanel(wx.Panel):
         self.removeButton = wx.Button(self, label="Remove")
         self.removeButton.Bind(wx.EVT_BUTTON, self.onRemoveWidget)
         controlSizer.Add(self.removeButton, 0, wx.CENTER|wx.ALL, 5)
+
+        self.closeBtn = wx.Button(self, label="Cancel")
+        self.closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
+        bottomSizer.Add(self.closeBtn,  0, wx.CENTER|wx.ALL, 5)
+
+        self.plotBtn = wx.Button(self, label="Plot")
+        self.plotBtn.Bind(wx.EVT_BUTTON, self.onPlot)
+        bottomSizer.Add(self.plotBtn,  0, wx.CENTER|wx.ALL, 5)
         
         self.mainSizer.Add(controlSizer, 0, wx.CENTER)
         self.mainSizer.Add(self.widgetSizer, 0, wx.CENTER|wx.ALL, 10)
+        self.mainSizer.Add(bottomSizer, 0, wx.CENTER|wx.ALL, 10)
         
         self.SetSizer(self.mainSizer)
         
@@ -52,8 +62,14 @@ class MyPanel(wx.Panel):
             mssg_box = wx.MessageBox("No Plots to remove !", "Message" ,wx.OK | wx.ICON_INFORMATION)  
 
     #----------------------------------------------------------------------
-    def a_func(self, event):
-        print("I was pressed !")
+    def onClose(self, event):
+        self.Close()
+
+    #----------------------------------------------------------------------
+    def onPlot(self, event):
+        # number_of_subplots = int(self.text_ctrl.GetValue())
+        # print(number_of_subplots)
+        print(self.number_of_buttons)
             
                 
 ########################################################################

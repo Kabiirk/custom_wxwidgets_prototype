@@ -26,27 +26,30 @@ class SizersSample(wx.Frame):
         plotBtn = wx.Button(panel, label="Plot")
 
 
+
         # Starts of sizers section
 
-        main_sizer = wx.BoxSizer(wx.VERTICAL)
-        subplot_sizer = wx.BoxSizer(wx.HORIZONTAL) # MY ADDIITON
-        mid_sizer = wx.BoxSizer(wx.HORIZONTAL) # MY ADDIITON
-        bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
+        subplot_sizer = wx.BoxSizer(wx.HORIZONTAL) # For Buttons
+        self.widget_sizer = wx.BoxSizer(wx.HORIZONTAL) # For adding subplots
+        bottom_sizer = wx.BoxSizer(wx.HORIZONTAL) # For closing window and plotting
         
 
-        # MY ADDIITON
+        # ADD Widgets to Sizer here
         subplot_sizer.Add(static_text, 1, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
         subplot_sizer.Add(self.text_ctrl, 1, wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
 
         bottom_sizer.Add(closeBtn, 0, wx.LEFT|wx.ALIGN_CENTER, 5)
         bottom_sizer.Add(plotBtn, 0, wx.RIGHT|wx.ALIGN_CENTER, 5)
 
-        # Add both to main Sizer and set Sizer
-        main_sizer.Add(subplot_sizer, 0, wx.ALL|wx.EXPAND, 5)
-        main_sizer.Add(bottom_sizer, 1, wx.ALL|wx.EXPAND, 5)
-        panel.SetSizer(main_sizer)
 
-        main_sizer.Layout()
+        # Add both Sizers to main Sizer and set Sizer
+        self.main_sizer.Add(subplot_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        self.main_sizer.Add(bottom_sizer, 1, wx.ALL|wx.EXPAND, 5)
+        self.main_sizer.Add(self.widget_sizer, 0, wx.CENTER|wx.ALL, 10)
+        panel.SetSizer(self.main_sizer)
+
+        self.main_sizer.Layout()
 
         # EVENT BINDING
         closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
