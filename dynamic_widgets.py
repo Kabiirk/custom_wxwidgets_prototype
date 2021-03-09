@@ -4,6 +4,10 @@
 # http://infinity77.net/pycon/tutorial/pybr/wxpython.html -> a good primer for wxpython and Sizers
 # https://www.blog.pythonlibrary.org/2012/05/05/wxpython-adding-and-removing-widgets-dynamically/ -> Add widgets on the click of a button
 # https://stackoverflow.com/questions/6745463/exit-frame-and-panel-from-panel-method -> Close parent frame from a button in the panel
+# https://stackoverflow.com/questions/15665022/how-do-i-get-the-values-of-textctrl-created-during-a-loop-in-wxpython -> Useful Link to track Textbox IDs
+# https://zetcode.com/wxpython/dialogs/ -> build custom dialogs
+
+
 
 import wx
 ########################################################################
@@ -14,11 +18,14 @@ class MyPanel(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent)
         self.number_of_buttons = 0
+        self.text_boxes_info = []
+        
+        
         self.frame = parent
         
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         controlSizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.widgetSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.widgetSizer = wx.BoxSizer(wx.VERTICAL)
         bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.addButton = wx.Button(self, label="Add")
@@ -53,10 +60,14 @@ class MyPanel(wx.Panel):
         # name = "button%s" % self.number_of_buttons
 
         # new_button = wx.Button(self, label=label, name=name)
-        lb = wx.ListBox(self, size=(200, 150), style=wx.LB_MULTIPLE, choices=sampleList)
-        #property_select_text = wx.StaticText
+        # lb = wx.ListBox(self, size=(200, 150), style=wx.LB_MULTIPLE, choices=sampleList)
+        text_box_name = "properties"+str(self.number_of_buttons)
+        # self.text_boxes_info[text_box_name] = []
 
-        self.widgetSizer.Add(lb, 0, wx.ALL, 5)
+        self.choose_property = wx.TextCtrl(self, -1, "", name=text_box_name)
+        self.choose_property.SetHint('Add Properties, separated by comma')
+
+        self.widgetSizer.Add(self.choose_property, 0, wx.ALL, 5)
         self.frame.fSizer.Layout()
         self.frame.Fit()
     
@@ -81,10 +92,14 @@ class MyPanel(wx.Panel):
 
     #----------------------------------------------------------------------
     def onPlot(self, event):
-        # number_of_subplots = int(self.text_ctrl.GetValue())
-        # print(number_of_subplots)
-        final_selection = []
-        print(self.number_of_buttons)
+        all_plot_props = []
+        #number_of_subplots = int(self.text_ctrl.GetValue())
+        txtCtrl_objects = [widget for widget in self.GetChildren() if isinstance(widget, wx.TextCtrl)]
+        for txtCtrl_obj in txtCtrl_objects:
+            property_values = txtCtrl_obj.GetValue()
+            all_plot_props.append(property_values.split(","))
+        self.text_boxes_info = all_plot_props
+        print(self.text_boxes_info)
             
                 
 ########################################################################
