@@ -3,72 +3,97 @@
 # http://infinity77.net/pycon/tutorial/pybr/wxpython.html -> a good primer for wxpython and Sizers
 # https://www.blog.pythonlibrary.org/2012/05/05/wxpython-adding-and-removing-widgets-dynamically/ -> Add widgets on the click of a button
 # https://stackoverflow.com/questions/6745463/exit-frame-and-panel-from-panel-method -> Close parent frame from a button in the panel
+# https://www.programcreek.com/python/example/4469/wx.ComboBox a good wesite for examples
+# https://zetcode.com/gui/wxwidgets/widgetsII/ -> for listboxes
+
+
 import wx
 
-# Import the widgets inspection tool
-import wx.lib.inspection
+class MyPanel(wx.Panel):
+    """
+    class MyPanel creates a panel with 2 comboboxes and more, inherits wx.Panel
+    (putting your components/widgets on a panel gives additional versatility)
+    """
+    def __init__(self, parent, id):
+        # no pos and size given, so panel defaults to fill the parent frame
+        wx.Panel.__init__(self, parent, id)
+        self.SetBackgroundColour((255,228,196))  # bisque
 
-
-class SizersSample(wx.Frame):
-
-    def __init__(self, parent):
-
-        wx.Frame.__init__(self, parent, title='Sizers sample')
-
-        panel = wx.Panel(self)
-
-        # Widgets creation
-        static_text = wx.StaticText(panel, -1, "Number of Subplots")
-        self.text_ctrl = wx.TextCtrl(panel, -1, "")
-
-        # Buttons Creation
-        closeBtn = wx.Button(panel, label="Cancel")
-        plotBtn = wx.Button(panel, label="Plot")
-
-
-
-        # Starts of sizers section
-
-        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
-        subplot_sizer = wx.BoxSizer(wx.HORIZONTAL) # For Buttons
-        self.widget_sizer = wx.BoxSizer(wx.HORIZONTAL) # For adding subplots
-        bottom_sizer = wx.BoxSizer(wx.HORIZONTAL) # For closing window and plotting
+         # no size given, so the text determines the needed label size       
+        wx.StaticText(self, -1, "convert from:", (10, 10))
+        # create a combo box to select units of measurement to convert from
+        self.combo1 = wx.ComboBox(self, -1, value=areaList[0], pos=wx.Point(10, 30),
+            size=wx.Size(120, 150), choices=areaList)
+        # optional tooltip
+        self.combo1.SetToolTip(wx.ToolTip("select unit from dropdown-list"))
+        
+        wx.StaticText(self, -1, "convert to:", pos=wx.Point(150, 10))
+        # create a combo box to select units of measurement to convert to
+        self.combo2 = wx.ComboBox(self, -1, value=areaList[0], pos=wx.Point(150, 30),
+            size=wx.Size(120, 150), choices=areaList)
+        
+        wx.StaticText(self, -1, "value to convert:", pos=wx.Point(10, 70))
+        self.edit1 = wx.TextCtrl(self, -1, value="1", pos=wx.Point(10, 90), size=wx.Size(175, 25))
+        self.edit1.SetBackgroundColour((255,255,197))  # suds yellow
+        
+        self.button1 = wx.Button(self, -1, label="Do the Conversion ...",
+            pos=wx.Point(10, 130), size=wx.Size(175, 28))
+        # respond to button click event
+        self.button1.Bind(wx.EVT_BUTTON, self.button1Click, self.button1)
+        
+        wx.StaticText(self, -1, "result:", (10, 170))
+        self.edit2 = wx.TextCtrl(self, -1, value="", pos=wx.Point(10, 190), size=wx.Size(350, 25))
+        self.edit2.SetBackgroundColour((217,255,219))  # vegaseat green
+       
+    def button1Click(self,event):
+        """Conversion button has been clicked"""
+        unit1 = self.combo1.GetValue()
+        unit2 = self.combo2.GetValue()
+        x = float(self.edit1.GetValue())
+        y = convertArea(x, unit1, unit2)
+        if y < 0.001:
+            str1 = "%f %s = %0.12f %s" % (x, unit1, y, unit2)  # very small y
+        elif y > 1000:
+            str1 = "%f %s = %0.3f %s" % (x, unit1, y, unit2)   # very large y
+        else:
+            str1 = "%f %s = %f %s" % (x, unit1, y, unit2)      # 6 decimals is default
+        self.edit2.SetValue(str1)
         
 
-        # ADD Widgets to Sizer here
-        subplot_sizer.Add(static_text, 1, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
-        subplot_sizer.Add(self.text_ctrl, 1, wx.RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
+def convertArea(x, unit1, unit2):
+    """convert area x of unit1 to area of unit2 and return area, on error return False"""
+    if (unit1 in areaD) and (unit2 in areaD):
+        factor1 = areaD[unit1]
+        factor2 = areaD[unit2]
+        return factor2*x/factor1
+    else:
+        return False
+    
+#create an empty dictionary
+areaD = {}
+# populate dictionary with units and conversion factors relative to sqmeter = 1.0
+# this minimizes the total number of conversion factors
+areaD['sqmeter']      = 1.0
+areaD['sqmillimeter'] = 1000000.0
+areaD['sqcentimeter'] = 10000.0
+areaD['sqkilometer']  = 0.000001
+areaD['hectare']      = 0.0001
+areaD['sqinch']       = 1550.003
+areaD['sqfoot']       = 10.76391
+areaD['sqyard']       = 1.19599
+areaD['acre']         = 0.0002471054
+areaD['sqmile']       = 0.0000003861022
 
-        bottom_sizer.Add(closeBtn, 0, wx.LEFT|wx.ALIGN_CENTER, 5)
-        bottom_sizer.Add(plotBtn, 0, wx.RIGHT|wx.ALIGN_CENTER, 5)
+# create a sorted list for the combo boxes
+areaList = sorted(areaD.keys())
 
 
-        # Add both Sizers to main Sizer and set Sizer
-        self.main_sizer.Add(subplot_sizer, 0, wx.ALL|wx.EXPAND, 5)
-        self.main_sizer.Add(bottom_sizer, 1, wx.ALL|wx.EXPAND, 5)
-        self.main_sizer.Add(self.widget_sizer, 0, wx.CENTER|wx.ALL, 10)
-        panel.SetSizer(self.main_sizer)
-
-        self.main_sizer.Layout()
-
-        # EVENT BINDING
-        closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
-        plotBtn.Bind(wx.EVT_BUTTON, self.onPlot)
-
-    # METHODS FOR BUTTONS
-    def onClose(self, event):
-        self.Close()
-
-    def onPlot(self, event):
-        number_of_subplots = int(self.text_ctrl.GetValue())
-        print(number_of_subplots)
-        
-
-if __name__ == '__main__':
-    app = wx.App(0)
-    frame = SizersSample(None)
-    frame.Show()
-
-    #wx.lib.inspection.InspectionTool().Show()
-
-    app.MainLoop()
+app = wx.PySimpleApp()
+# create a window/frame, no parent, -1 is default ID, title, size
+frame = wx.Frame(None, -1, "Convert Area ...", size = (400, 300))
+# call the derived class, -1 is default ID, can also use wx.ID_ANY
+MyPanel(frame,-1)
+# show the frame
+frame.Show(True)
+# start the event loop
+app.MainLoop()

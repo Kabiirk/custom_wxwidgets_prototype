@@ -19,13 +19,13 @@ class MyPanel(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.number_of_buttons = 0
         self.text_boxes_info = []
-        
+        self.sampleList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
         
         self.frame = parent
         
         self.mainSizer = wx.BoxSizer(wx.VERTICAL)
         controlSizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.widgetSizer = wx.BoxSizer(wx.VERTICAL)
+        self.widgetSizer = wx.BoxSizer(wx.HORIZONTAL)
         bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.addButton = wx.Button(self, label="Add")
@@ -52,20 +52,15 @@ class MyPanel(wx.Panel):
         
     #----------------------------------------------------------------------
     def onAddWidget(self, event):
-        """"""
-        sampleList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
         self.number_of_buttons += 1
-
-        # label = "Button %s" %  self.number_of_buttons
-        # name = "button%s" % self.number_of_buttons
-
-        # new_button = wx.Button(self, label=label, name=name)
-        # lb = wx.ListBox(self, size=(200, 150), style=wx.LB_MULTIPLE, choices=sampleList)
+        
         text_box_name = "properties"+str(self.number_of_buttons)
-        # self.text_boxes_info[text_box_name] = []
 
-        self.choose_property = wx.TextCtrl(self, -1, "", name=text_box_name)
-        self.choose_property.SetHint('Add Properties, separated by comma')
+        #self.choose_property = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, sampleList, 0 )
+        self.choose_property = wx.ListBox(self, style=wx.LB_MULTIPLE|wx.LB_NEEDED_SB, choices=self.sampleList)
+        #self.choose_property.SetScrollPos(wx.VERTICAL,self.choose_property.GetScrollRange(wx.VERTICAL),refresh=True)
+        # self.choose_property = wx.TextCtrl(self, -1, "", name=text_box_name)
+        # self.choose_property.SetHint('Add Properties, separated by comma')
 
         self.widgetSizer.Add(self.choose_property, 0, wx.ALL, 5)
         self.frame.fSizer.Layout()
@@ -94,10 +89,12 @@ class MyPanel(wx.Panel):
     def onPlot(self, event):
         all_plot_props = []
         #number_of_subplots = int(self.text_ctrl.GetValue())
-        txtCtrl_objects = [widget for widget in self.GetChildren() if isinstance(widget, wx.TextCtrl)]
-        for txtCtrl_obj in txtCtrl_objects:
-            property_values = txtCtrl_obj.GetValue()
-            all_plot_props.append(property_values.split(","))
+        ListBox_objects = [widget for widget in self.GetChildren() if isinstance(widget, wx.ListBox)]
+        for ListBox_object in ListBox_objects:
+            #property_values = txtCtrl_obj.GetValue()
+            property_index_list = ListBox_object.GetSelections()
+            property_values = [self.sampleList[index] for index in property_index_list]
+            all_plot_props.append(property_values)
         self.text_boxes_info = all_plot_props
         print(self.text_boxes_info)
             
