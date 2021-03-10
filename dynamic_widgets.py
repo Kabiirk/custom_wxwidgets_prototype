@@ -57,8 +57,8 @@ class MyPanel(wx.Panel):
         text_box_name = "properties"+str(self.number_of_buttons)
 
         #self.choose_property = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, sampleList, 0 )
-        self.choose_property = wx.ListBox(self, style=wx.LB_MULTIPLE|wx.LB_NEEDED_SB, choices=self.sampleList)
-        #self.choose_property.SetScrollPos(wx.VERTICAL,self.choose_property.GetScrollRange(wx.VERTICAL),refresh=True)
+        self.choose_property = wx.ListBox(self, style=wx.LB_MULTIPLE, choices=self.sampleList)
+        self.choose_property.SetScrollPos(wx.VERTICAL,self.choose_property.GetScrollRange(wx.VERTICAL),refresh=True)
         # self.choose_property = wx.TextCtrl(self, -1, "", name=text_box_name)
         # self.choose_property.SetHint('Add Properties, separated by comma')
 
