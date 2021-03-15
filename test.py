@@ -97,7 +97,14 @@ class MyPanel(wx.Panel):
 
         for ColorPicker_object in ColorPicker_objects:
             all_colors.append(ColorPicker_object.GetColour().GetAsString(wx.C2S_HTML_SYNTAX))
-        print(all_colors)
+
+        nested_color_list = []
+        for template in self.templates:
+            template_colors = []
+            for prop in template:
+                template_colors.append(all_colors.pop(0))
+            nested_color_list.append(template_colors)
+        print(nested_color_list)
 
     def setTemplate(self, template_list):
         self.templates = template_list
