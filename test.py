@@ -93,11 +93,11 @@ class MyPanel(wx.Panel):
     def onPlot(self, event):
         all_colors = []
 
-        ColorPicker_objects = [widget for widget in self.GetChildren() ]#if isinstance(widget, wx.ColourPickerCtrl)]
+        ColorPicker_objects = [widget for widget in self.GetChildren() if isinstance(widget, wx.ColourPickerCtrl)]
 
-        # for ColorPicker_object in ColorPicker_objects:
-        #     all_colors.append(ColorPicker_objects.GetColour())
-        print(ColorPicker_objects)
+        for ColorPicker_object in ColorPicker_objects:
+            all_colors.append(ColorPicker_object.GetColour().GetAsString(wx.C2S_HTML_SYNTAX))
+        print(all_colors)
 
     def setTemplate(self, template_list):
         self.templates = template_list
