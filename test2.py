@@ -3,6 +3,7 @@ import numpy
 import matplotlib
 
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 
 class TestFrame(wx.Frame):
@@ -19,12 +20,21 @@ class MatplotPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent,-1,size=(50,50))
 
-        self.figure = Figure()
-        self.axes = self.figure.add_subplot(111)
-        t = numpy.arange(0.0,10,1.0)
-        s = [0,1,0,1,0,2,1,2,1,0]
-        self.y_max = 1.0
-        self.axes.plot(t,s)
+        t = numpy.arange(0.0, 10.0, 0.1)
+        s = 1 + numpy.sin(2 * numpy.pi * t)
+
+        self.figure, self.axis = plt.subplots()
+        self.axis.plot(t, s)
+
+        self.axis.set(xlabel='time (s)', ylabel='voltage (mV)', title='About as simple as it gets, folks')
+        self.axis.grid()
+
+        # self.figure = Figure()
+        # self.axes = self.figure.add_subplot(111)
+        # t = numpy.arange(0.0,10,1.0)
+        # s = [0,1,0,1,0,2,1,2,1,0]
+        # self.y_max = 1.0
+        # self.axes.plot(t,s)
         self.canvas = FigureCanvas(self,-1,self.figure)
 
 app = wx.App(redirect=False)
