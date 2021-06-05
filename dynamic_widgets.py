@@ -31,7 +31,7 @@ class MyPanel(wx.Panel):
         #self.widgetSizer = wx.BoxSizer(wx.HORIZONTAL)
         bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        ###### setup scrollpanel
+        # setup scrollpanel
         self.scrollPnl = scrolled.ScrolledPanel(self, -1, size=(400, 200), style = wx.TAB_TRAVERSAL|wx.SUNKEN_BORDER)
         self.scrollPnlSizer = wx.BoxSizer(wx.HORIZONTAL) #
 
@@ -64,9 +64,7 @@ class MyPanel(wx.Panel):
         
         text_box_name = "properties"+str(self.number_of_buttons)
 
-        #self.choose_property = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, sampleList, 0 )
         choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)
-        #choose_property.SetScrollPos(wx.VERTICAL,choose_property.GetScrollRange(wx.VERTICAL),refresh=True)
         self.scrollPnlSizer.Add(choose_property, 0, wx.ALL, 3)
         self.scrollPnl.SetSizer(self.scrollPnlSizer)
         self.scrollPnl.SetAutoLayout(1)
@@ -74,10 +72,6 @@ class MyPanel(wx.Panel):
 
         self.Refresh()
         self.Layout()
-
-        #self.widgetSizer.Add(choose_property, 0, wx.ALL, 5)
-        #self.frame.fSizer.Layout()
-        #self.frame.Fit()
     
     #----------------------------------------------------------------------
     def onRemoveWidget(self, event):
@@ -126,79 +120,10 @@ class MyFrame(wx.Frame):
         self.Fit()
         self.Show()
         
-#----------------------------------------------------------------------
+
+
+
 if __name__ == "__main__":
     app = wx.App(False)
     frame = MyFrame()
     app.MainLoop()
-
-
-# import wx
-# import  wx.lib.scrolledpanel as scrolled
-
-# class ImageDlg(wx.Dialog):
-#     def __init__(self, parent, title):
-#         wx.Dialog.__init__(self, parent=parent,title=title, size=wx.DefaultSize)
-#         self.sampleList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
-
-#         #
-#         self.scrollPnl = scrolled.ScrolledPanel(self, -1, size=(200, 200), style = wx.TAB_TRAVERSAL|wx.SUNKEN_BORDER)
-
-#         self.addBtn = wx.Button(self, id=wx.ID_ADD)
-#         self.Bind(wx.EVT_BUTTON, self.on_add, self.addBtn)
-
-#         self.mainSizer = wx.BoxSizer(wx.VERTICAL)       
-
-#         self.scrollPnlSizer = wx.BoxSizer(wx.HORIZONTAL) #      
-#         choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)#
-#         self.scrollPnlSizer.Add(choose_property, 1, wx.ALL, 3)#
-
-#         self.mainSizer.Add(self.addBtn)
-#         self.mainSizer.Add(self.scrollPnl)#
-
-#         self.SetSizerAndFit(self.mainSizer)#
-
-
-#     def on_add(self, event):
-#         choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)
-#         self.scrollPnlSizer.Add(choose_property, 1, wx.ALL, 3)#
-#         self.scrollPnl.SetSizer(self.scrollPnlSizer)#
-#         self.scrollPnl.SetAutoLayout(1)#
-#         self.scrollPnl.SetupScrolling()  #
-
-#         self.Refresh()#
-#         self.Layout()#
-
-# class TestPanel(wx.Panel):     
-#     def __init__(self, parent):
-#         wx.Panel.__init__(self, parent=parent)
-
-#         openDlg_btn = wx.Button(self, label="Open Dialog")
-#         self.Bind(wx.EVT_BUTTON, self.onBtn)
-
-#         mainSizer = wx.BoxSizer(wx.HORIZONTAL)
-#         mainSizer.Add(openDlg_btn, 0, wx.ALL, 10)
-#         self.SetSizerAndFit(mainSizer)
-#         self.Centre()
-
-#     def onBtn(self, event):
-#         dlg = ImageDlg(self, title='Image Dialog')
-#         dlg.SetSize((300,300))
-
-#         dlg.CenterOnScreen()
-#         dlg.ShowModal()  
-#         dlg.Destroy()
-
-
-# class TestFrame(wx.Frame):    
-#     def __init__(self, parent):
-#         wx.Frame.__init__(self, parent)
-#         TestPanel(self)
-
-
-# if __name__ == "__main__":
-
-#     app = wx.App()
-#     frame = TestFrame(None)
-#     frame.Show()
-#     app.MainLoop()
