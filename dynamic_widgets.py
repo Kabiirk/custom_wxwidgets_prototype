@@ -8,9 +8,51 @@
 # # https://zetcode.com/wxpython/dialogs/ -> build custom dialogs
 
 
+import os
 
 import wx
 import wx.lib.scrolledpanel as scrolled
+import wx.lib.inspection
+
+import pandas as pd
+import numpy as np
+
+class SelectSwirrColumn(wx.Dialog):
+    def __init__(self, parent, data):
+        self.available_columns = list(data.columns)
+        wx.Dialog.__init__(self, None, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER, size=(300, 300))
+
+        mainSizer = wx.BoxSizer(wx.VERTICAL)
+
+        colSizer = wx.BoxSizer(wx.HORIZONTAL)
+        col_text = wx.StaticText(self, wx.ID_ANY, u"Choose SWirr Column", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.col_choice = wx.Choice(self, id=wx.ID_ANY, choices=self.available_columns, style=0, validator=wx.DefaultValidator, name=wx.ChoiceNameStr)
+        colSizer.Add(col_text , 0, wx.ALL, 0)
+        colSizer.Add(self.col_choice , 0, wx.ALL, 0)
+
+
+        buttonsSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.btnOK = wx.Button(self, wx.ID_OK)
+        self.btnCancel = wx.Button(self, wx.ID_CANCEL)
+        buttonsSizer.Add(self.btnOK, 0, wx.ALL|wx.CENTER, 5)
+        buttonsSizer.Add(self.btnCancel, 0, wx.ALL|wx.CENTER, 5)
+
+
+        mainSizer.Add(colSizer, 0, wx.EXPAND|wx.ALL, 5)
+        mainSizer.Add(buttonsSizer, 0, wx.ALL|wx.CENTER, 5)
+
+        self.SetSizer(mainSizer)
+        self.Maximize()
+        self.Layout()
+        mainSizer.Fit(self)
+        self.Centre(wx.BOTH)
+
+    def get_chosen_column(self):
+        chosen_col_index = self.col_choice.GetSelection()
+        print(str(self.available_columns[chosen_col_index]))
+        return str(self.available_columns[chosen_col_index])
+
+
 ########################################################################
 class MyPanel(wx.Panel):
     """"""
@@ -33,7 +75,7 @@ class MyPanel(wx.Panel):
 
         # setup scrollpanel
         self.scrollPnl = scrolled.ScrolledPanel(self, -1, size=(400, 200), style = wx.TAB_TRAVERSAL|wx.SUNKEN_BORDER)
-        self.scrollPnlSizer = wx.BoxSizer(wx.HORIZONTAL) #
+        self.scrollPnlSizer = wx.BoxSizer(wx.VERTICAL) #
 
 
         self.addButton = wx.Button(self, label="Add")
@@ -47,8 +89,14 @@ class MyPanel(wx.Panel):
         closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
         self.plotBtn = wx.Button(self, label="Plot")
         self.plotBtn.Bind(wx.EVT_BUTTON, self.onPlot)
+        self.csvBtn = wx.Button(self, label="Read .csv")
+        self.csvBtn.Bind(wx.EVT_BUTTON, self.oncsv)
+        self.excelBtn = wx.Button(self, label="Read .xls")
+        self.excelBtn.Bind(wx.EVT_BUTTON, self.onexcel)
         bottomSizer.Add(closeBtn,  0, wx.CENTER|wx.ALL, 5)
         bottomSizer.Add(self.plotBtn,  0, wx.CENTER|wx.ALL, 5)
+        bottomSizer.Add(self.csvBtn,  0, wx.CENTER|wx.ALL, 5)
+        bottomSizer.Add(self.excelBtn,  0, wx.CENTER|wx.ALL, 5)
         
         
         self.mainSizer.Add(controlSizer, 0, wx.CENTER)
@@ -61,11 +109,17 @@ class MyPanel(wx.Panel):
     #----------------------------------------------------------------------
     def onAddWidget(self, event):
         self.number_of_buttons += 1
-        
-        text_box_name = "properties"+str(self.number_of_buttons)
 
-        choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)
-        self.scrollPnlSizer.Add(choose_property, 0, wx.ALL, 3)
+        #choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)
+
+        range_and_value_Sizer = wx.BoxSizer(wx.HORIZONTAL)
+        range_input = wx.TextCtrl(self.scrollPnl, wx.ID_ANY, 'Range')
+        value = wx.TextCtrl(self.scrollPnl, wx.ID_ANY, 'Value')
+
+        range_and_value_Sizer.Add(range_input, 0, wx.ALL, 5)
+        range_and_value_Sizer.Add(value, 0, wx.ALL, 5)
+
+        self.scrollPnlSizer.Add(range_and_value_Sizer, 0, wx.ALL, 5)
         self.scrollPnl.SetSizer(self.scrollPnlSizer)
         self.scrollPnl.SetAutoLayout(1)
         self.scrollPnl.SetupScrolling()  
@@ -75,17 +129,28 @@ class MyPanel(wx.Panel):
     
     #----------------------------------------------------------------------
     def onRemoveWidget(self, event):
-        if self.scrollPnlSizer.GetChildren():
-            sizer_item = self.scrollPnlSizer.GetItem(self.number_of_buttons-1)
-            widget = sizer_item.GetWindow()
-            self.scrollPnlSizer.Hide(widget)
-            widget.Destroy()
-            self.number_of_buttons -= 1
-            self.frame.fSizer.Layout()
-            self.frame.Fit()
+        sizer_list = list(self.scrollPnlSizer.GetChildren())
+        last_sizer = sizer_list.pop()
+        last_box_sizer = last_sizer.GetSizer()
+        last_box_sizer.Destroy()
+        # last_sizer_item = sizer_list.pop()
+        # last_box_sizer = last_sizer_item.GetSizer()
+        # print(last_box_sizer.GetItem(1))
+        # for item in sizer_list:
+        #     print(item.GetSizer())
+        # if len(sizer_list)>0:
+        #     #sizer_list = list(self.scrollPnlSizer.GetChildren()) #self.scrollPnlSizer.GetItem(self.number_of_buttons-1)
+        #     # widget = sizer_item.GetWindow()
+        #     # self.scrollPnlSizer.Hide(widget)
+        #     # widget.Destroy()
+        #     # self.number_of_buttons -= 1
+        #     # self.frame.fSizer.Layout()
+        #     # self.frame.Fit()
+        #     return
 
-        else:
-            mssg_box = wx.MessageBox("No Plots to remove !", "Message" ,wx.OK | wx.ICON_INFORMATION)  
+
+        # else:
+        #     mssg_box = wx.MessageBox("No Plots to remove !", "Message" ,wx.OK | wx.ICON_INFORMATION)  
 
     #----------------------------------------------------------------------
     def onClose(self, event):
@@ -104,7 +169,70 @@ class MyPanel(wx.Panel):
             all_plot_props.append(property_values)
         self.text_boxes_info = all_plot_props
         print(self.text_boxes_info)
-            
+
+    def oncsv(self, event):
+        wildcard = "SWirr CSV (*.csv)|*.csv"
+        home_dir = os.path.expanduser('~')
+        prime_dir = os.path.join(home_dir, 'PrimeProjects')
+        dlg = wx.FileDialog(
+            None,
+            message="Select csv for facies",
+            defaultFile="",
+            wildcard=wildcard,
+            style=wx.FD_OPEN,
+            defaultDir=prime_dir if os.path.exists(home_dir) else home_dir
+        )
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            csv_dataframe = pd.read_csv(path)
+            dlg.Destroy()
+
+            col_dlg = SelectSwirrColumn(None, csv_dataframe)
+            if col_dlg.ShowModal() == wx.ID_OK:
+                swirr_col = col_dlg.get_chosen_column()
+                print(csv_dataframe[swirr_col])
+                col_dlg.Destroy()
+            else:
+                # VERY IMPORTANT, IF DIALOG NOT DESTROYED
+                # IT STILL RUNS IN app.MainLoop() LIKE AN
+                # INFINITE LOOP & CONTROL IS NOT RETURNED
+                # TO USER/TERMINAL
+                col_dlg.Destroy()
+        else:
+            # VERY IMPORTANT, SAME REASON
+            dlg.Destroy()
+                
+    def onexcel(self, event):
+        wildcard = "SWirr XLS (*.xls)|*.xls"
+        home_dir = os.path.expanduser('~')
+        prime_dir = os.path.join(home_dir, 'PrimeProjects')
+        dlg = wx.FileDialog(
+            None,
+            message="Select xls for facies",
+            defaultFile="",
+            wildcard=wildcard,
+            style=wx.FD_OPEN,
+            defaultDir=prime_dir if os.path.exists(home_dir) else home_dir
+        )
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            excel_dataframe = pd.read_excel(path)
+            dlg.Destroy()
+
+            col_dlg = SelectSwirrColumn(None, excel_dataframe)
+            if col_dlg.ShowModal() == wx.ID_OK:
+                swirr_col = col_dlg.get_chosen_column()
+                print(excel_dataframe[swirr_col])
+                col_dlg.Destroy()
+            else:
+                # VERY IMPORTANT, IF DIALOG NOT DESTROYED
+                # IT STILL RUNS IN app.MainLoop() LIKE AN
+                # INFINITE LOOP & CONTROL IS NOT RETURNED
+                # TO USER/TERMINAL
+                col_dlg.Destroy()
+        else:
+            # VERY IMPORTANT, SAME REASON
+            dlg.Destroy()
                 
 ########################################################################
 class MyFrame(wx.Frame):
@@ -126,4 +254,5 @@ class MyFrame(wx.Frame):
 if __name__ == "__main__":
     app = wx.App(False)
     frame = MyFrame()
+    #wx.lib.inspection.InspectionTool().Show()
     app.MainLoop()
