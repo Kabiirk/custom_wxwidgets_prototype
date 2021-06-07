@@ -170,7 +170,9 @@ class MyPanel(wx.Panel):
         self.text_boxes_info = all_plot_props
         print(self.text_boxes_info)
 
+    #----------------------------------------------------------------------
     def oncsv(self, event):
+        # TODO : PUT xlrd dependency in requirements.txt
         wildcard = "SWirr CSV (*.csv)|*.csv"
         home_dir = os.path.expanduser('~')
         prime_dir = os.path.join(home_dir, 'PrimeProjects')
@@ -201,8 +203,10 @@ class MyPanel(wx.Panel):
         else:
             # VERY IMPORTANT, SAME REASON
             dlg.Destroy()
-                
+
+    #----------------------------------------------------------------------               
     def onexcel(self, event):
+        # TODO : PUT xlrd dependency in requirements.txt
         wildcard = "SWirr XLS (*.xls)|*.xls"
         home_dir = os.path.expanduser('~')
         prime_dir = os.path.join(home_dir, 'PrimeProjects')
