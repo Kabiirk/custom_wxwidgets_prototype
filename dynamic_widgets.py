@@ -20,7 +20,7 @@ import numpy as np
 class SelectSwirrColumn(wx.Dialog):
     def __init__(self, parent, data):
         self.available_columns = list(data.columns)
-        wx.Dialog.__init__(self, None, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER, size=(300, 300))
+        wx.Dialog.__init__(self, parent, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER, size=(500, 300))
 
         mainSizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -190,9 +190,11 @@ class MyPanel(wx.Panel):
             dlg.Destroy()
 
             col_dlg = SelectSwirrColumn(None, csv_dataframe)
+            col_dlg.SetSize(300,125)
+            col_dlg.Center()
             if col_dlg.ShowModal() == wx.ID_OK:
                 swirr_col = col_dlg.get_chosen_column()
-                print(csv_dataframe[swirr_col])
+                print(csv_dataframe[swirr_col].to_numpy())
                 col_dlg.Destroy()
             else:
                 # VERY IMPORTANT, IF DIALOG NOT DESTROYED
@@ -224,9 +226,11 @@ class MyPanel(wx.Panel):
             dlg.Destroy()
 
             col_dlg = SelectSwirrColumn(None, excel_dataframe)
+            col_dlg.SetSize(300,125)
+            col_dlg.Center()
             if col_dlg.ShowModal() == wx.ID_OK:
                 swirr_col = col_dlg.get_chosen_column()
-                print(excel_dataframe[swirr_col])
+                print(excel_dataframe[swirr_col].to_numpy())
                 col_dlg.Destroy()
             else:
                 # VERY IMPORTANT, IF DIALOG NOT DESTROYED
