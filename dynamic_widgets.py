@@ -11,6 +11,7 @@
 import os
 
 import wx
+from wx.core import HELP_SEARCH_INDEX
 import wx.lib.scrolledpanel as scrolled
 import wx.lib.inspection
 
@@ -63,6 +64,7 @@ class MyPanel(wx.Panel):
         self.number_of_buttons = 0
         self.text_boxes_info = []
         self.sampleList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
+        self.range_and_value = {}
         
         self.frame = parent
         
@@ -70,6 +72,7 @@ class MyPanel(wx.Panel):
 
 
         controlSizer = wx.BoxSizer(wx.HORIZONTAL)
+        headingSizer = wx.BoxSizer(wx.HORIZONTAL)
         #self.widgetSizer = wx.BoxSizer(wx.HORIZONTAL)
         bottomSizer = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -78,12 +81,17 @@ class MyPanel(wx.Panel):
         self.scrollPnlSizer = wx.BoxSizer(wx.VERTICAL) #
 
 
-        self.addButton = wx.Button(self, label="Add")
-        self.addButton.Bind(wx.EVT_BUTTON, self.onAddWidget)
-        self.removeButton = wx.Button(self, label="Remove")
-        self.removeButton.Bind(wx.EVT_BUTTON, self.onRemoveWidget)
-        controlSizer.Add(self.addButton, 0, wx.CENTER|wx.ALL, 5)
-        controlSizer.Add(self.removeButton, 0, wx.CENTER|wx.ALL, 5)
+        addButton = wx.Button(self, label="Add")
+        addButton.Bind(wx.EVT_BUTTON, self.onAddWidget)
+        removeButton = wx.Button(self, label="Remove")
+        removeButton.Bind(wx.EVT_BUTTON, self.onRemoveWidget)
+        controlSizer.Add(addButton, 0, wx.CENTER|wx.ALL, 5)
+        controlSizer.Add(removeButton, 0, wx.CENTER|wx.ALL, 5)
+
+        rangetext = wx.StaticText(self, wx.ID_ANY, u"Range(comma separated)", wx.DefaultPosition, wx.DefaultSize, 0)
+        valuetext = wx.StaticText(self, wx.ID_ANY, u"Value", wx.DefaultPosition, wx.DefaultSize, 0)
+        headingSizer.Add(rangetext, 0, wx.ALL, 10)
+        headingSizer.Add(valuetext, 0, wx.ALL, 10)
 
         closeBtn = wx.Button(self, label="Cancel")
         closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
@@ -100,6 +108,7 @@ class MyPanel(wx.Panel):
         
         
         self.mainSizer.Add(controlSizer, 0, wx.CENTER)
+        self.mainSizer.Add(headingSizer, 0, wx.CENTER)
         self.mainSizer.Add(self.scrollPnl)
         #self.mainSizer.Add(self.widgetSizer, 0, wx.CENTER|wx.ALL, 10)
         self.mainSizer.Add(bottomSizer, 0, wx.CENTER|wx.ALL, 10)
@@ -113,7 +122,7 @@ class MyPanel(wx.Panel):
         #choose_property = wx.ListBox(self.scrollPnl, style=wx.LB_MULTIPLE, choices=self.sampleList)
 
         range_and_value_Sizer = wx.BoxSizer(wx.HORIZONTAL)
-        range_input = wx.TextCtrl(self.scrollPnl, wx.ID_ANY, 'Range')
+        range_input = wx.TextCtrl(self.scrollPnl, wx.ID_ANY, 'Start,End')
         value = wx.TextCtrl(self.scrollPnl, wx.ID_ANY, 'Value')
 
         range_and_value_Sizer.Add(range_input, 0, wx.ALL, 5)
@@ -130,9 +139,18 @@ class MyPanel(wx.Panel):
     #----------------------------------------------------------------------
     def onRemoveWidget(self, event):
         sizer_list = list(self.scrollPnlSizer.GetChildren())
-        last_sizer = sizer_list.pop()
+        n = len(sizer_list)
+        last_sizer = sizer_list[n-1]
         last_box_sizer = last_sizer.GetSizer()
-        last_box_sizer.Destroy()
+        n_lvl_sizer = list(last_box_sizer.GetChildren())
+
+        textctrlrange = n_lvl_sizer[0].GetWindow()
+        textctrlvalue = n_lvl_sizer[1].GetWindow()
+
+        textctrlrange.Destroy()
+        textctrlvalue.Destroy()
+        self.scrollPnlSizer.Remove(n-1)
+
         # last_sizer_item = sizer_list.pop()
         # last_box_sizer = last_sizer_item.GetSizer()
         # print(last_box_sizer.GetItem(1))
@@ -159,16 +177,31 @@ class MyPanel(wx.Panel):
 
     #----------------------------------------------------------------------
     def onPlot(self, event):
-        all_plot_props = []
-        ListBox_objects = [widget for widget in self.scrollPnlSizer.GetChildren() ]#if isinstance(widget, wx.ListBox)]
-        print(ListBox_objects)
-        for ListBox_object in ListBox_objects:
+        # all_plot_props = []
+        # ListBox_objects = [widget for widget in self.scrollPnlSizer.GetChildren() ]#if isinstance(widget, wx.ListBox)]
+        # print(ListBox_objects)
+        # for ListBox_object in ListBox_objects:
 
-            property_index_list = ListBox_object.GetWindow().GetSelections()
-            property_values = [self.sampleList[index] for index in property_index_list]
-            all_plot_props.append(property_values)
-        self.text_boxes_info = all_plot_props
-        print(self.text_boxes_info)
+        #     property_index_list = ListBox_object.GetWindow().GetSelections()
+        #     property_values = [self.sampleList[index] for index in property_index_list]
+        #     all_plot_props.append(property_values)
+        # self.text_boxes_info = all_plot_props
+        # print(self.text_boxes_info)
+        sizer_list = list(self.scrollPnlSizer.GetChildren())
+        n = len(sizer_list)
+
+        range_value_dict = {}
+        for i in range(0,n):
+            top_sizer = sizer_list[i]
+            last_box_sizer = top_sizer.GetSizer()
+            n_lvl_sizer = list(last_box_sizer.GetChildren())
+            textctrlrange = n_lvl_sizer[0].GetWindow()
+            textctrlvalue = n_lvl_sizer[1].GetWindow()
+
+            range_value_dict[textctrlrange.GetValue()] = float(textctrlvalue.GetValue())
+
+        self.range_and_value = range_value_dict
+        print(self.range_and_value)
 
     #----------------------------------------------------------------------
     def oncsv(self, event):
