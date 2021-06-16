@@ -93,6 +93,7 @@
 import sys
 import os.path
 import wx
+from wx.core import Icon
 import wx.stc as stc
 
 # class MyFrame
@@ -179,6 +180,7 @@ wildcard = "Text (*.txt)|*.txt|"        \
 class MyFrame(wx.Frame):
     def __init__(self, filename="Editor"):
         super(MyFrame, self).__init__(None)
+        locale = wx.Locale(wx.LANGUAGE_ENGLISH)
 
         #------------
 
@@ -229,6 +231,7 @@ class MyFrame(wx.Frame):
         #------------
 
         self.CreateMenu()
+        self.CreateToolBar()
         self.CreateStatusBar()
         self.BindEvents()
 
@@ -239,7 +242,6 @@ class MyFrame(wx.Frame):
         """
 
         menuBar = wx.MenuBar()
-
         #------------
 
         fileMenu = wx.Menu()
@@ -278,6 +280,26 @@ class MyFrame(wx.Frame):
         # Add the menuBar to the frame.
         self.SetMenuBar(menuBar)
 
+    def CreateToolBar(self):
+        tb = wx.ToolBar(self, style=wx.TB_TEXT|wx.HORIZONTAL)
+        tb.SetToolBitmapSize((10, 10))
+
+        tb.AddTool(1, u'Open', wx.Bitmap( r"icons\open.png"))
+        tb.AddTool(2, u'Save', wx.Bitmap( r"icons\save.png"))
+        tb.AddTool(3, u'Save As', wx.Bitmap( r"icons\save-as.png"))
+        tb.AddTool(4, u'Exit', wx.Bitmap( r"icons\exit.png"))
+        tb.AddTool(5, u'Run', wx.Bitmap( r"icons\run.png"))
+        tb.Realize()
+
+        tb.Bind(wx.EVT_TOOL, self.OnOpen, id=1)
+        tb.Bind(wx.EVT_TOOL, self.OnSave, id=2)
+        tb.Bind(wx.EVT_TOOL, self.OnSaveAs, id=3)
+        tb.Bind(wx.EVT_TOOL, self.OnCloseMe, id=4)
+
+   
+
+  
+        self.SetToolBar(tb)
 
     def BindEvents(self):
         """
