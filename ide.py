@@ -295,6 +295,7 @@ class MyFrame(wx.Frame):
         tb.Bind(wx.EVT_TOOL, self.OnSave, id=2)
         tb.Bind(wx.EVT_TOOL, self.OnSaveAs, id=3)
         tb.Bind(wx.EVT_TOOL, self.OnCloseMe, id=4)
+        tb.Bind(wx.EVT_TOOL, self.OnRun, id=5)
 
    
 
@@ -353,6 +354,8 @@ class MyFrame(wx.Frame):
             self.control.SetValue(file.read())
             file.close()
 
+    def OnRun(self, event):
+        print("Executing file @ : " + os.path.join(self.dirname, self.filename))
 
     def OnSave(self, event):
         """
