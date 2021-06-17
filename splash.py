@@ -1,4 +1,5 @@
 # sample_one_a.py
+# REF: https://wiki.wxpython.org/How%20to%20create%20a%20customized%20splash%20screen%20%28Phoenix%29
 
 import sys
 import os
