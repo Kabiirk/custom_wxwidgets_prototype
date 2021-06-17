@@ -99,6 +99,8 @@ import wx.stc as stc
 # class MyFrame
 # class MyApp
 
+keywords = 'False class from  or None continue global pass True def if raise and del import return as elif in try assert else is while async except lambda with await finally nonlocal yield break for not'
+
 class PySTC(stc.StyledTextCtrl):
 
     def __init__(self, parent):
@@ -112,8 +114,22 @@ class PySTC(stc.StyledTextCtrl):
                   'size' : 10,
                   }
 
+        # Allow Margin to show line Numbers
         self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
+        # Change width of margin
         self.SetMarginWidth(1, 35)
+        # Line numbers in margin colours
+        # ref : https://stackoverflow.com/questions/61461839/how-to-change-the-background-of-a-wxpython-styledtextctrl-margin
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER,'fore:#F2F2F2,back:#46464E')
+        # Indentation guides
+        self.SetIndentationGuides(1)
+        # Width of Tab = 4 spaces
+        self.SetTabWidth(4)
+        #Highlighting Specific Keywords (Pyhton only for now)
+        self.SetKeyWords(0, keyWords=keywords)
+
+
+
         # # XML styles
         # # Default
         # self.StyleSetSpec(stc.STC_H_DEFAULT, "fore:#000000,face:%(helv)s,size:%(size)d" % faces)
