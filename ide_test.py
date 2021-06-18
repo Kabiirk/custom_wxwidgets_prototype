@@ -1,5 +1,8 @@
-def mul(a, b):
-	return a*b
-
-print('Hello World')
-print(mul(23,3))
+# import time
+# counter = 0
+# while counter < 40:
+#     print ("Counter:",counter)
+#     counter += 1
+#     time.sleep(0.5)
+
+print('Hello World !')
